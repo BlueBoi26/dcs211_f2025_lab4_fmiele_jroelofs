@@ -31,7 +31,6 @@ print(type(df['state']))
 print(df.value_counts(['state']))
 
 #function to create per-state bar graph 
-
 us_state_to_abbrev = {
     "Alabama": "AL",
     "Alaska": "AK",
@@ -94,6 +93,14 @@ us_state_to_abbrev = {
 
 def createByStateBarPlot(df, field, filename, title, ylabel):
     '''
+    function to create bar graph, grouped by state, for certain fields
+
+    Parameters:
+        df: arc data frame
+        field: which field to graph
+        filename: name of file graph will be saved to
+        title: title of graph
+        ylabel:label of y-axis
     '''
     state_mean= df.groupby('state')[field].mean()
     state_mean= state_mean.sort_values()
