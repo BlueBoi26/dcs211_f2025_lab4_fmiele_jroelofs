@@ -81,6 +81,55 @@ for state, county_count in bottom_states.items():
 
 print(table2)
 
+def printTableBy(df: pd.DataFrame, field: str, how_many: int, title: str) -> None:
+    """
+    Prints a PrettyTable showing the top and bottom 'how_many' counties in the dataframe
+    based on the specified field
+    
+    Parameters:
+        df (pd.DataFrame): The complete dataframe
+        field (str): Column name to sort
+        how_many (int): Number of entries to include in top and bottom
+        title (str): Title text to print above the table
+    """
+
+    # Sort by the specified field
+    sorted_df = df.sort_values(by=field, ascending=False)
+
+    # Select top and bottom subsets
+    top = sorted_df.head(how_many)
+    # by=field tells it to sort through columns by field
+    bottom = sorted_df.tail(how_many).sort_values(by=field, ascending=True)
+
+    # Print title
+    print(title)
+
+    # Create PrettyTable
+    table3 = Table()
+    table3.field_names = ["State", "County", "PCI", "Poverty Rate", "Avg Unemployment"]
+
+    # Add top rows
+    # We don't need the index, so we just itterate through it and do not use it
+    for i, row in top.iterrows():
+        table3.add_row([
+            f"{row['state']:<20}",
+            f"{row['county']:<20}",
+            f"{row['pcmi_21']:.2f}",
+            f"{row['poverty_rate_17-21']:.2f}",
+            f"{row['ave_unemp_rate_19-21']:.2f}"
+        ])
+
+    # Add bottom rows
+    for i, row in bottom.iterrows():
+        table3.add_row([
+            f"{row['state']:<20}",
+            f"{row['county']:<20}",
+            f"{row['pcmi_21']:.2f}",
+            f"{row['poverty_rate_17-21']:.2f}",
+            f"{row['ave_unemp_rate_19-21']:.2f}"
+    ])
+    print(table3)
+
 #function to create per-state bar graph 
 us_state_to_abbrev = {
     "Alabama": "AL",
@@ -164,3 +213,11 @@ def createByStateBarPlot(df, field, filename, title, ylabel):
     plt.xticks(range(len(state_mean)), state_abbreviations, rotation=90)
 
     plt.savefig(filename)
+    
+def main():
+    printTableBy(df, 'poverty_rate_17-21', 3, "COUNTIES BY POVERTY RATE")
+    printTableBy(df, 'ave_unemp_rate_19-21', 10, "COUNTIES BY UNEMPLOYMENT RATE")
+    printTableBy(df, 'pcmi_21', 10, "COUNTIES BY PER CAPITA INCOME")
+
+if __name__ == "__main__":
+    main()
