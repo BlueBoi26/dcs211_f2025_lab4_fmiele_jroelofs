@@ -30,6 +30,85 @@ print(type(df['state']))
 #how many counties per state
 print(df.value_counts(['state']))
 
+#function to create per-state bar graph 
+
+us_state_to_abbrev = {
+    "Alabama": "AL",
+    "Alaska": "AK",
+    "Arizona": "AZ",
+    "Arkansas": "AR",
+    "California": "CA",
+    "Colorado": "CO",
+    "Connecticut": "CT",
+    "Delaware": "DE",
+    "Florida": "FL",
+    "Georgia": "GA",
+    "Hawaii": "HI",
+    "Idaho": "ID",
+    "Illinois": "IL",
+    "Indiana": "IN",
+    "Iowa": "IA",
+    "Kansas": "KS",
+    "Kentucky": "KY",
+    "Louisiana": "LA",
+    "Maine": "ME",
+    "Maryland": "MD",
+    "Massachusetts": "MA",
+    "Michigan": "MI",
+    "Minnesota": "MN",
+    "Mississippi": "MS",
+    "Missouri": "MO",
+    "Montana": "MT",
+    "Nebraska": "NE",
+    "Nevada": "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    "Ohio": "OH",
+    "Oklahoma": "OK",
+    "Oregon": "OR",
+    "Pennsylvania": "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    "Tennessee": "TN",
+    "Texas": "TX",
+    "Utah": "UT",
+    "Vermont": "VT",
+    "Virginia": "VA",
+    "Washington": "WA",
+    "West Virginia": "WV",
+    "Wisconsin": "WI",
+    "Wyoming": "WY",
+    "District of Columbia": "DC",
+    "American Samoa": "AS",
+    "Guam": "GU",
+    "Northern Mariana Islands": "MP",
+    "Puerto Rico": "PR",
+    "United States Minor Outlying Islands": "UM",
+    "Virgin Islands, U.S.": "VI",
+}
+
+def createByStateBarPlot(df, field, filename, title, ylabel):
+    '''
+    '''
+    state_mean= df.groupby('state')[field].mean()
+    state_mean= state_mean.sort_values()
+    state_abbreviations = [us_state_to_abbrev[state] for state in state_mean.index]
+
+    plt.figure(figsize=(12,6))
+    plt.bar(range(len(state_mean)), state_mean.values)
+    plt.title(title)
+    plt.ylabel(ylabel)
+    plt.xticks(range(len(state_mean)), state_abbreviations, rotation=90)
+
+    plt.savefig(filename)
+
+
+
 # Create the PrettyTable
 table = Table()
 table.field_names = ["State", " # counties", "PCI (mean)", "PCI (median)", "Poverty Rate"]
