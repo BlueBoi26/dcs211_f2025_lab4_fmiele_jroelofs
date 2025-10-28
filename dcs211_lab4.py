@@ -30,6 +30,57 @@ print(type(df['state']))
 #how many counties per state
 print(df.value_counts(['state']))
 
+# Create the PrettyTable
+table = Table()
+table.field_names = ["State", " # counties", "PCI (mean)", "PCI (median)", "Poverty Rate"]
+
+# Group each dataframe together by state
+state_groups = df.groupby("state")
+
+# Group the top 10 states by size (number of counties)
+top_states = state_groups.size().nlargest(10)
+
+for state, county_count in top_states.items():
+    # Get the DataFrame for that specific state
+    group = state_groups.get_group(state)
+    
+    # Compute state statistics
+    pci_mean = group['pcmi_21'].mean()
+    pci_median = group['pcmi_21'].median()
+    pov_mean = group['poverty_rate_17-21'].mean()
+
+    # Add a row to the PrettyTable
+    table.add_row([state, county_count, f"{pci_mean:.2f}", f"{pci_median:.2f}", f"{pov_mean:.2f}"])
+print(table)
+
+# Create the PrettyTable
+table2 = Table()
+table2.field_names = ["State", " # counties", "PCI (mean)", "PCI (median)", "Poverty Rate"]
+
+# Group each dataframe together by state
+state_groups = df.groupby("state")
+
+# Group the top 10 states by size (number of counties)
+bottom_states = state_groups.size().nsmallest(10)
+
+# Check if "District of Columbia" is in the index, and if it is, use the drop function to remove it
+if "District of Columbia" in bottom_states.index:
+    bottom_states = bottom_states.drop("District of Columbia")
+
+for state, county_count in bottom_states.items():
+    # Get the DataFrame for that specific state
+    group = state_groups.get_group(state)
+    
+    # Compute state statistics
+    pci_mean = group['pcmi_21'].mean()
+    pci_median = group['pcmi_21'].median()
+    pov_mean = group['poverty_rate_17-21'].mean()
+
+    # Add a row to the PrettyTable
+    table2.add_row([state, county_count, f"{pci_mean:.2f}", f"{pci_median:.2f}", f"{pov_mean:.2f}"])
+
+print(table2)
+
 #function to create per-state bar graph 
 
 us_state_to_abbrev = {
@@ -106,56 +157,3 @@ def createByStateBarPlot(df, field, filename, title, ylabel):
     plt.xticks(range(len(state_mean)), state_abbreviations, rotation=90)
 
     plt.savefig(filename)
-
-
-
-# Create the PrettyTable
-table = Table()
-table.field_names = ["State", " # counties", "PCI (mean)", "PCI (median)", "Poverty Rate"]
-
-# Group each dataframe together by state
-state_groups = df.groupby("state")
-
-# Group the top 10 states by size (number of counties)
-top_states = state_groups.size().nlargest(10)
-
-for state, county_count in top_states.items():
-    # Get the DataFrame for that specific state
-    group = state_groups.get_group(state)
-    
-    # Compute state statistics
-    pci_mean = group['pcmi_21'].mean()
-    pci_median = group['pcmi_21'].median()
-    pov_mean = group['poverty_rate_17-21'].mean()
-
-    # Add a row to the PrettyTable
-    table.add_row([state, county_count, f"{pci_mean:.2f}", f"{pci_median:.2f}", f"{pov_mean:.2f}"])
-print(table)
-
-# Create the PrettyTable
-table2 = Table()
-table2.field_names = ["State", " # counties", "PCI (mean)", "PCI (median)", "Poverty Rate"]
-
-# Group each dataframe together by state
-state_groups = df.groupby("state")
-
-# Group the top 10 states by size (number of counties)
-bottom_states = state_groups.size().nsmallest(10)
-
-# Check if "District of Columbia" is in the index, and if it is, use the drop function to remove it
-if "District of Columbia" in bottom_states.index:
-    bottom_states = bottom_states.drop("District of Columbia")
-
-for state, county_count in bottom_states.items():
-    # Get the DataFrame for that specific state
-    group = state_groups.get_group(state)
-    
-    # Compute state statistics
-    pci_mean = group['pcmi_21'].mean()
-    pci_median = group['pcmi_21'].median()
-    pov_mean = group['poverty_rate_17-21'].mean()
-
-    # Add a row to the PrettyTable
-    table2.add_row([state, county_count, f"{pci_mean:.2f}", f"{pci_median:.2f}", f"{pov_mean:.2f}"])
-
-print(table2)
