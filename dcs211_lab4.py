@@ -191,7 +191,7 @@ us_state_to_abbrev = {
     "Virgin Islands, U.S.": "VI",
 }
 
-def createByStateBarPlot(df, field, filename, title, ylabel):
+def createByStateBarPlot(df, field, filename, title, ylabel) -> None:
     '''
     function to create bar graph, grouped by state, for certain fields
 
